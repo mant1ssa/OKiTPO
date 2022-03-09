@@ -1,12 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
 <html>
 <head>
 <title>Тестовый логин</title>
 </head>
 <body>
+	<div class="wrapper">
+        <header id="header" class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1 class="logo-text">Название придумаю потом</h1>
+                </div>
+            </div>
+        </header>
 <form action="/login" method="post">
-	Имя пользователя:<input type="text" name="username">
-	Пароль:<input type="password" name="password">
-	<input type="submit" value="Войти">
+
+	<div class="sign-form">
+		<h2><br>Войти</h2>
+		<p>Пожалуйста, заполните эту форму, чтобы войти в учетную запись.</p>
+		<hr>
+		
+		<label for="login"><b>Гос. номер автомобиля пользователя</b></label>
+		<input type="text" placeholder="введите номер авто" name="username" required>
+
+		<label for="psw"><b>Пароль</b></label>
+		<input type="password" placeholder="Введите пароль" name="password" required>
+		<hr>
+		<input type="submit" class="btn" name="submit" value="Войти">
+	</div>
+	<div class="container signin">
+		<p>Еще нет аккаунта? <a href="sign_up.html">Зарегестрироваться</a>.</p>
+	</div>
+
 </form>
+<footer id="footer" class="footer">
+	<div class="container">
+		<p class="footer-text">&copy; Все права защищены. 2022</p>
+	</div>
+</footer>
 </body>
 </html>

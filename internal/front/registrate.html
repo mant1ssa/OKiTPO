@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html>
+<head>
+<title>Тестовый логин</title>
+</head>
+<body>
+	<div class="wrapper">
+        <header id="header" class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1 class="logo-text">Название придумаю потом</h1>
+                </div>
+            </div>
+        </header>
+<form action="/login" method="post">
+
+	<div class="sign-form">
+		<h2><br>Войти</h2>
+		<p>Пожалуйста, заполните эту форму, чтобы войти в учетную запись.</p>
+		<hr>
+		
+        <label for="name"><b>Ваше имя</b></label>
+		<input type="text" placeholder="введите свое имя" name="user_name" required>
+        <br><br>
+
+        <label for="surname"><b>Ваша фамилия</b></label>
+		<input type="text" placeholder="введите свою фамилию" name="user_surname" required>
+        <br><br>
+
+        <label for="otchestvo"><b>Ваше отчество</b></label>
+		<input type="text" placeholder="введите свое отчество" name="user_otchestvo" required>
+        <br><br>
+
+		<label for="login"><b>Гос. номер автомобиля пользователя</b></label>
+		<input type="text" placeholder="введите правильно номер авто (пример: a111xe)" name="user_stateNum" required>
+        <br><br>
+
+		<label for="psw"><b>Придумайте пароль</b></label>
+		<input type="password" placeholder="Введите пароль" name="user_password" required>
+		<hr>
+		<input type="submit" class="btn" name="submit" value="Зарегестрироваться">
+	</div>
+	<div class="container signin">
+		<p>Уже имеете аккаунт? <a href="sign_up.html">Войти</a>.</p>
+	</div>
+
+</form>
+<footer id="footer" class="footer">
+	<div class="container">
+		<p class="footer-text">&copy; Все права защищены. 2022</p>
+	</div>
+</footer>
+</body>
+</html>
