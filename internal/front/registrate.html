@@ -2,7 +2,8 @@
 <html lang="ru">
 <html>
 <head>
-<title>Тестовый логин</title>
+<title>Рег</title>
+<link rel="stylesheet" href="static/css/main.css">
 </head>
 <body>
 	<div class="wrapper">
@@ -13,11 +14,11 @@
                 </div>
             </div>
         </header>
-<form action="/login" method="post">
+<form action="/registrate" method="post">
 
 	<div class="sign-form">
-		<h2><br>Войти</h2>
-		<p>Пожалуйста, заполните эту форму, чтобы войти в учетную запись.</p>
+		<h2><br>Зарегестрироваться</h2>
+		<p>Пожалуйста, заполните эту форму, чтобы создать учетную запись.</p>
 		<hr>
 		
         <label for="name"><b>Ваше имя</b></label>
@@ -41,11 +42,10 @@
 		<hr>
 		<input type="submit" class="btn" name="submit" value="Зарегестрироваться">
 	</div>
-	<div class="container signin">
-		<p>Уже имеете аккаунт? <a href="sign_up.html">Войти</a>.</p>
-	</div>
-
 </form>
+
+<form action="/login" method="post"><p>Уже есть аккаунт? </p><input type="submit" class="btn" name="submit" value="Войти"></form>
+
 <footer id="footer" class="footer">
 	<div class="container">
 		<p class="footer-text">&copy; Все права защищены. 2022</p>
