@@ -1,0 +1,132 @@
+html{
+    height: 100%;
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #201b2d;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+}
+div, p, input, button, form, span, a, ul, li, label, hr {
+    box-sizing: border-box;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+}
+.container{
+    width: 1170px;
+    margin: 0 auto;
+}
+.header{
+    background: #fff;
+    padding: 20px 0 20px 0;
+    box-shadow: 0px 6px 8px -4px #000;
+}
+.logo-text{
+    font-weight: 900;
+    font-size: 20px;
+    color: #3b2f58;
+    text-align: center;
+}
+.main{
+    flex: 0 0 auto;
+}
+.settings{
+    display: flex;
+    justify-content: space-between;
+}
+.cat-select, .btn{
+    border-radius: 10px;
+    height: 55px;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+.cat-form{
+    padding-top: 30px;
+    width: 500px;
+}
+input[type=text]{
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+input[type=password]{
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+input[type=text]:focus{
+    background-color: #ddd;
+    outline: none;
+}
+.btn {
+    background-color: #3b2f58;
+    color: white;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+.btn:hover{
+    opacity: 1;
+}
+input[type=submit] {
+    font-family: 'Montserrat' sans-serif;
+}
+.stat-table{
+    font-size: 14px;
+    text-align: center;
+    margin-top: 30px;
+    padding: 0 5px 0 5px;
+}
+.stat-table-main{
+    margin-top: 30px;
+    border: 3px solid #3b2f58;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+.desc{
+    font-size: 20px;
+    font-weight: 700;
+    color: #3b2f58;
+    font-family: 'Montserrat', sans-serif;
+}
+.wrapper{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.footer{
+    margin-top: auto;
+    box-shadow: 4px 6px 8px 0 #000;
+}
+
+th, td:first-child {
+    background: #3b2f58;
+    color: white;
+    padding: 10px 20px;
+}
+th, td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+}
+td {
+    background: #D8E6F3;
+}
+th:first-child, td:first-child {
+    text-align: left;
+}
+
