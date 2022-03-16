@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -20,15 +21,35 @@ const (
 	NEPROPUSTIL        // Непропустил пешехода,      		 код 5
 )
 
+var (
+	tmplReg  *template.Template
+	tmplLog  *template.Template
+	tmplMain *template.Template
+)
+
 // Структура Нарушение, необходима для отображения полей таблицы, будем выводить на экран в сайте
 type Violation struct {
-	Num  string `json:"StateNumAuto"` // гос. номер автомобиля нарушителя
-	Date string `json:"DataTime"`     // потом возможно переформатируем в тип time
-	Type int    `json:"Type"`         // вид нарушения (коды нарушений, сверху они перечислены)
-	Fine int    `json:"Fine"`         // Размер штрафа
+	Num  string    `json:"StateNumAuto"` // гос. номер автомобиля нарушителя
+	Date time.Time `json:"DataTime"`     // потом возможно переформатируем в тип time
+	Type int       `json:"Type"`         // вид нарушения (коды нарушений, сверху они перечислены)
+	Fine int       `json:"Fine"`         // Размер штрафа
 }
 
+// Структура, чтоб в странице mainpg вывести ФИО и номер водителя
+type UserOfSite struct {
+	Name       string
+	Surname    string
+	Otchestvo  string
+	NumAuto    string
+	Violations []Violation // Список его нарушений
+}
+
+var newUser UserOfSite // Это будет пользователь, зашедший на сайт
+
 func isCorrect(num string) bool { // Функция проверки правильности ввода гос.номера (с 2й по 4й д.б. цифры)
+	if len(num) != 6 {
+		return false
+	}
 	if _, err := strconv.Atoi(num[1:4]); err == nil {
 		return true
 	}
@@ -60,12 +81,7 @@ func registr(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Метод:", r.Method) // получаем информацию о методе запроса
 	if r.Method == "GET" {
-		t, err := template.ParseFiles("front/registrate.html")
-		if err != nil {
-			fmt.Fprintf(w, err.Error())
-			return
-		}
-		t.Execute(w, nil)
+		tmplReg.Execute(w, nil)
 	} else {
 		r.ParseForm()
 		// логическая часть процесса входа
@@ -80,9 +96,16 @@ func registr(w http.ResponseWriter, r *http.Request) {
 		stateNum := r.FormValue("user_stateNum")
 		password := r.FormValue("user_password")
 
+		type Correct struct { // Структура для шаблона, оповещение пользвателя о том, что он неправильно что-то ввел
+			IsnotOk1 bool
+			IsnotOk2 bool
+		}
+
+		// Проверка, правильно ли введена форма ввода номера
 		if !isCorrect(stateNum) {
-			fmt.Fprintf(w, "Введите правильный номер авто!")
-			http.Redirect(w, r, "/login", 301)
+
+			tmplReg.Execute(w, Correct{IsnotOk1: true, IsnotOk2: false})
+			return
 		}
 
 		// Проверка того, что в БД уже нет пользователя с данным гос.номером. Он не может повторяться
@@ -110,10 +133,9 @@ func registr(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 			defer insert.Close()
-			http.Redirect(w, r, "/login", 301)
-		} else {
-			fmt.Fprintf(w, "Похоже вы уже зарегестрированы!")
-			http.Redirect(w, r, "/login", 301)
+			http.Redirect(w, r, "/login", 301) // Если не встречаем пользователя с данным номером авто, вносим его в БД
+		} else { // и редиректим в форму входа
+			tmplReg.Execute(w, Correct{IsnotOk1: false, IsnotOk2: true})
 		}
 	}
 }
@@ -135,12 +157,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Метод:", r.Method) // получаем информацию о методе запроса
 	if r.Method == "GET" {
-		t, err := template.ParseFiles("front/login.html")
-		if err != nil {
-			fmt.Fprintf(w, err.Error())
-			return
-		}
-		t.Execute(w, nil)
+		tmplLog.Execute(w, nil)
 	} else {
 		r.ParseForm()
 		// логическая часть процесса входа
@@ -184,20 +201,132 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		if flag {
 			// Если есть такой пользователь
-			http.Redirect(w, r, "/main", 301)
+			http.Redirect(w, r, "/mainpg", 301)
+			newUser.Name = name
+			newUser.Surname = surname
+			newUser.Otchestvo = otchestvo
+			newUser.NumAuto = stateNum
 		} else {
-			http.Redirect(w, r, "/login", 301)
+			type IsOk struct {
+				IsnotCor bool
+			}
+			tmplLog.Execute(w, IsOk{IsnotCor: true})
 		}
 	}
 }
 
+func mainpg(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:mysql@/tpo") // Подключаемся к БД
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	//inp, err := db.Query("SELECT * FROM `violations` WHERE StateNumAuto=?", newUser.NumAuto)
+	inp, err := db.Query("SELECT * FROM `violations` WHERE StateNumAuto = ?", newUser.NumAuto)
+	if err != nil {
+		panic(err)
+	}
+	defer inp.Close()
+
+	//if r.Method == "GET" {
+	//tmplMain.Execute(w, nil)
+	//} else {
+	r.ParseForm()
+	//allViolation := []Violation{}
+
+	type Violation struct {
+		Num  string `json:"StateNumAuto"` // гос. номер автомобиля нарушителя
+		Date string `json:"DataTime"`     // потом возможно переформатируем в тип time
+		Type string `json:"Type"`         // вид нарушения (коды нарушений, сверху они перечислены)
+		Fine int    `json:"Fine"`         // Размер штрафа
+	}
+	/*
+		type UserOfSite struct {
+			Name       string
+			Surname    string
+			Otchestvo  string
+			NumAuto    string
+			Violations []Violation // Список его нарушений
+		}
+		}
+		//allViolation := []input{}
+		i := 0
+		for inp.Next() {
+			p := UserOfSite{}
+			//p := input{}
+			//err := inp.Scan(&p.Num, &p.Type, &p.Fine)
+			//err := inp.Scan(&p.Num, &p.Date, &p.Type, &p.Fine)
+			err := inp.Scan(&p.Violations[i].Num, &p.Date, &p.Type, &p.Fine)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			//allViolation = append(allViolation, p)
+			newUser.Violations = append(newUser.Violations, p)
+		}*/
+	/*allViolation := []Violation{}
+	for inp.Next() {
+		p := Violation{}
+		err := inp.Scan(&p.Num, &p.Date, &p.Type, &p.Fine)
+		//err := inp.Scan(&p.Num, &p.Date, &p.Type, &p.Fine)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		allViolation = append(allViolation, p)
+		tmplMain.Execute(w, allViolation)
+	}*/
+	//fmt.Println("HERE!")
+	AllVio := []Violation{}
+	for inp.Next() {
+		p := Violation{}
+		err := inp.Scan(&p.Num, &p.Date, &p.Type, &p.Fine)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		//fmt.Println(p)
+		AllVio = append(AllVio, p)
+	}
+	tmplMain.Execute(w, AllVio)
+	//}
+}
+
+// Обработчик нажатия на кнопку Оплатить на главной форме
+func deleteVio(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:mysql@/tpo") // Подключаемся к БД
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	inp, err := db.Query("DELETE FROM `violations` WHERE StateNumAuto = ?", newUser.NumAuto)
+	if err != nil {
+		panic(err)
+	}
+	defer inp.Close()
+
+	http.Redirect(w, r, "/mainpg", 301)
+}
+
 func handleFunc() {
-	http.HandleFunc("/registrate", registr)  // Обработчик страницы регистрации
-	http.HandleFunc("/login", login)         // Обработчик страницы входа в учетную запись
-	err := http.ListenAndServe(":9090", nil) // устанавливаем порт для прослушивания
+	var err error
+
+	tmplLog, _ = template.ParseFiles("front/login.html")
+	tmplReg, _ = template.ParseFiles("front/registrate.html")
+	tmplMain, _ = template.ParseFiles("front/mainpg.html")
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("front/static/"))))
+	http.HandleFunc("/registrate", registr) // Обработчик страницы регистрации
+	http.HandleFunc("/login", login)        // Обработчик страницы входа в учетную запись
+	http.HandleFunc("/mainpg", mainpg)
+	http.HandleFunc("/deleteVio", deleteVio) // Обработчик оплаты штрафа, на главной странице
+
+	err = http.ListenAndServe(":9090", nil) // устанавливаем порт для прослушивания
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
 }
 
 func main() {
@@ -209,5 +338,4 @@ func main() {
 	fmt.Println("DB is opened")
 
 	handleFunc()
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 }
