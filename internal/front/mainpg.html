@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="static/css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main page</title>
+</head>
+<body>
+    <div class="wrapper">
+        <header id="header" class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1 class="logo-text">Система учета нарушений</h1>
+                </div>
+            </div>
+            <p align="center"></p>
+        </header>
+        <main id="main" class="main">
+            <div class="container">
+                <div class="settings">
+                    <form action = "/deleteVio" method="post" class="cat-form">
+                        <p class="desc">Веб-сервис «Учет нарушений правил дорожного движения». <br>Для оплаты всех задолженностей, нажмите на кнопку "Оплатить"</p>
+                        <input class="btn" type="submit" name="submit" value="Оплатить">
+                    </form>
+                    <br>
+                    <div class="stat-table-main"> 
+                        <p>Номер нарушителя   Тип нарушения   Дата  Штраф</p>
+                        <ul>
+                            {{range .}}
+                                <li>{{.Num}} {{.Type}}      {{.Date}}      {{.Fine}}</li>
+                            {{end}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer id="footer" class="footer">
+            <div class="container">
+                <p class="footer-text">&copy; Все права защищены. 2022</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<html>
+<head>
+	<title>Логин</title>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="static/css/main.css">
+</head>
+<body>
+	<div class="wrapper">
+        <header id="header" class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1 class="logo-text">Система учета нарушений</h1>
+                </div>
+            </div>
+        </header>
+		<main id="sign" class="sign"></main>
+			<div class="container">
+				<form action="/login" method="post">
+					<div class="sign-form">
+						<h2><br>Войти</h2>
+						<p>Пожалуйста, заполните эту форму, чтобы войти в учетную запись.</p>
+						<hr>
+						
+						{{if .IsnotCor}}
+						<p style="color:crimson">Одно или несколько полей введены неправильно!</p>
+						{{end}}
+						<label for="name"><b>Ваше имя</b></label>
+						<input type="text" placeholder="введите свое имя" name="user_name" required>
+						<br><br>
+
+						<label for="surname"><b>Ваша фамилия</b></label>
+						<input type="text" placeholder="введите свою фамилию" name="user_surname" required>
+						<br><br>
+
+						<label for="otchestvo"><b>Ваше отчество</b></label>
+						<input type="text" placeholder="введите свое отчество" name="user_otchestvo" required>
+						<br><br>
+
+						<label for="login"><b>Гос. номер автомобиля пользователя</b></label>
+						<input type="text" placeholder="введите правильно номер авто (пример: a111xe)" name="user_stateNum" required>
+						<br><br>
+
+						<label for="psw"><b>Пароль</b></label>
+						<input type="password" placeholder="Введите пароль" name="user_password" required>
+						<hr>
+						<input type="submit" class="btn" name="submit" value="Войти">
+					</div>
+					<div class="container signin">
+						<p>Еще нет аккаунта? <a href="registrate">Зарегестрироваться</a>.</p>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer id="footer" class="footer">
+		<div class="container">
+			<p class="footer-text">&copy; Все права защищены. 2022</p>
+		</div>
+		</footer>
+	</div>
+</body>
+</html>
